@@ -1,0 +1,44 @@
+module mod13_tb();
+reg clk,rst,load;
+reg [3:0] data_in;
+wire [3:0]c;
+
+parameter cycle=10;
+
+mod dut(.clk(clk),.rst(rst),.load(load),.data_in(data_in),.c(c));
+
+always
+    begin   
+        #(cycle/2);
+        clk=1'b0;
+        #(cycle/2);
+        clk=~clk;
+    end
+ 
+task rst_din();
+begin
+    @(negedge clk)
+        rst=1'b0;
+    @(negedge clk)
+        rst=1'b1;
+end
+endtask
+
+task din(input l,
+        input [3:0]data);
+    begin
+     load=l;
+     data_in<=data;
+   end
+endtask
+
+initial 
+    begin
+        rst_din();
+        din(1'b1,4'b0010);
+        #10;
+        din(1'b0,4'b1101);
+        #10;
+     end
+endmodule
+    
